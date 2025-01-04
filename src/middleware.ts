@@ -96,8 +96,13 @@ export async function middleware(request: NextRequest) {
     }
 
     // Create supabase client
-    const res = NextResponse.next()
-    const supabase = createMiddlewareClient<Database>({ req: request, res })
+    const response = NextResponse.next({
+      request: {
+        headers: request.headers,
+      },
+    });
+    
+    const supabase = createMiddlewareClient<Database>({ req: request, res: response });
     
     // Get session
     const { data: { session } } = await supabase.auth.getSession()
@@ -125,7 +130,7 @@ export async function middleware(request: NextRequest) {
       }
     }
 
-    return res
+    return response
   } catch (error) {
     console.error('Middleware error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

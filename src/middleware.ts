@@ -4,6 +4,47 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { Database } from '@/types/supabase'
 
+interface TelegramInitData {
+  hash: string
+  [key: string]: string | number | undefined
+}
+
+async function validateTelegramWebAppData(data: TelegramInitData) {
+  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
+  if (!BOT_TOKEN) {
+    throw new Error('TELEGRAM_BOT_TOKEN is not set')
+  }
+
+  // Use Web Crypto API for edge compatibility
+  const encoder = new TextEncoder()
+  
+  // Create secret key
+  const secretKey = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(BOT_TOKEN),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+
+  const checkString = Object.entries(data)
+    .filter(([key]) => key !== 'hash')
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => `${key}=${value}`)
+    .join('\n')
+
+  const signature = await crypto.subtle.sign(
+    'HMAC',
+    secretKey,
+    encoder.encode(checkString)
+  )
+
+  const hashArray = Array.from(new Uint8Array(signature))
+  const hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+
+  return hash === data.hash
+}
+
 export async function middleware(request: NextRequest) {
   try {
     // Skip middleware for static files and api routes
@@ -15,24 +56,69 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next()
     }
 
-    // Allow all access temporarily for testing
+    // Allow direct access in development mode
+    if (process.env.NODE_ENV === 'development') {
+      const res = NextResponse.next()
+      const supabase = createMiddlewareClient<Database>({ req: request, res })
+      
+      // Create an anonymous session if none exists
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        await supabase.auth.signInWithPassword({
+          email: 'test@telegram.user',
+          password: process.env.TELEGRAM_USER_DEFAULT_PASSWORD || 'default-secure-password'
+        })
+      }
+      
+      return res
+    }
+
+    const telegramData = request.headers.get('telegram-data')
+    if (!telegramData) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const parsedData = JSON.parse(telegramData) as TelegramInitData
+    const isValid = await validateTelegramWebAppData(parsedData)
+
+    if (!isValid) {
+      return NextResponse.json({ error: 'Invalid authentication data' }, { status: 401 })
+    }
+
+    // Create supabase client
     const res = NextResponse.next()
     const supabase = createMiddlewareClient<Database>({ req: request, res })
     
-    // Create an anonymous session if none exists
+    // Get session
     const { data: { session } } = await supabase.auth.getSession()
+    
+    // If no session, create anonymous session with Telegram metadata
     if (!session) {
       await supabase.auth.signInWithPassword({
-        email: 'test@telegram.user',
+        email: `${parsedData.user_id}@telegram.user`,
         password: process.env.TELEGRAM_USER_DEFAULT_PASSWORD || 'default-secure-password'
+      }).then(async ({ error }) => {
+        // If sign in fails, create new user
+        if (error) {
+          await supabase.auth.signUp({
+            email: `${parsedData.user_id}@telegram.user`,
+            password: process.env.TELEGRAM_USER_DEFAULT_PASSWORD || 'default-secure-password',
+            options: {
+              data: {
+                telegram_id: parsedData.user_id,
+                username: parsedData.username,
+                full_name: parsedData.first_name
+              }
+            }
+          })
+        }
       })
     }
-    
-    return res
 
+    return res
   } catch (error) {
     console.error('Middleware error:', error)
-    return NextResponse.next() // Allow request through even if there's an error
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 

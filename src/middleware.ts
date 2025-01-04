@@ -3,9 +3,8 @@ import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { Database } from '@/types/supabase'
-import crypto from 'crypto'
 
-function validateTelegramWebAppData(data: any) {
+async function validateTelegramWebAppData(data: any) {
   const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
   if (!BOT_TOKEN) {
     throw new Error('TELEGRAM_BOT_TOKEN is not set')
@@ -21,17 +20,39 @@ function validateTelegramWebAppData(data: any) {
     .map(([key, value]) => `${key}=${value}`)
     .join('\n')
 
-  const secretKey = crypto
-    .createHmac('sha256', 'WebAppData')
-    .update(BOT_TOKEN)
-    .digest()
+  async function createHmac(key: string, data: string) {
+    const encoder = new TextEncoder();
+    const keyData = encoder.encode(key);
+    const dataToHash = encoder.encode(data);
+    
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      keyData,
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+    
+    const signature = await crypto.subtle.sign(
+      'HMAC',
+      cryptoKey,
+      dataToHash
+    );
+    
+    return new Uint8Array(signature);
+  }
 
-  const hash = crypto
-    .createHmac('sha256', secretKey)
-    .update(dataCheckString)
-    .digest('hex')
+  const secretKeyBuffer = await createHmac('WebAppData', BOT_TOKEN);
+  
+  const hashBuffer = await createHmac(
+    new TextDecoder().decode(secretKeyBuffer),
+    dataCheckString
+  );
+  
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-  return hash === data.hash
+  return hashHex === data.hash;
 }
 
 export async function middleware(request: NextRequest) {
@@ -68,7 +89,7 @@ export async function middleware(request: NextRequest) {
     }
 
     const parsedData = JSON.parse(telegramData)
-    const isValid = validateTelegramWebAppData(parsedData)
+    const isValid = await validateTelegramWebAppData(parsedData)
 
     if (!isValid) {
       return NextResponse.json({ error: 'Invalid authentication data' }, { status: 401 })

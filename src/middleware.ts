@@ -83,7 +83,7 @@ export async function middleware(request: NextRequest) {
     
     // If no session, create anonymous session with Telegram metadata
     if (!session) {
-      const { data: { session: newSession }, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: `${parsedData.user.id}@telegram.user`,
         password: process.env.TELEGRAM_USER_DEFAULT_PASSWORD || 'default-secure-password'
       })

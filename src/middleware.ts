@@ -4,21 +4,6 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { Database } from '@/types/supabase'
 
-interface TelegramInitData {
-  hash: string
-  [key: string]: string | number | undefined
-}
-
-async function validateTelegramWebAppData(data: TelegramInitData) {
-  const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
-  if (!BOT_TOKEN) {
-    throw new Error('TELEGRAM_BOT_TOKEN is not set')
-  }
-
-  // ... validation logic remains the same
-  return true // Temporarily return true for testing
-}
-
 export async function middleware(request: NextRequest) {
   try {
     // Skip middleware for static files and api routes

@@ -1,36 +1,144 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Companions - Your Personal AI Assistant in Telegram
 
-## Getting Started
+![AI Companions Banner](public/banner.png)
 
-First, run the development server:
+AI Companions is a Telegram Mini App that provides personalized AI assistants for various domains like finance, crypto, productivity, and wellness. Users can create, customize, and chat with AI companions directly within Telegram.
+
+## 🌟 Features
+
+- **Personalized AI Companions**
+  - Choose from different specializations (Finance, Crypto, Productivity, Wellness)
+  - Customize companion personality and appearance
+  - Public and private companion modes
+
+- **Seamless Telegram Integration**
+  - Native Telegram Mini App experience
+  - Automatic theme adaptation
+  - Persistent conversations across devices
+
+- **Rich User Experience**
+  - Real-time chat interface
+  - Contextual navigation
+  - Dark mode support
+  - Loading states and error handling
+
+## 🛠️ Tech Stack
+
+- **Frontend**
+  - Next.js 14 (App Router)
+  - React
+  - TypeScript
+  - Tailwind CSS
+  - Lucide Icons
+
+- **Backend**
+  - Supabase
+  - PostgreSQL
+  - Row Level Security
+  - TypeScript
+
+- **Authentication**
+  - Telegram Login
+  - Supabase Auth
+
+## 📦 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- Telegram Bot Token
+- Supabase Project
+
+### Environment Variables
+
+Create a `.env.local` file with:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# Telegram
+TELEGRAM_BOT_TOKEN=your_bot_token
+NEXT_PUBLIC_TELEGRAM_USER_DEFAULT_PASSWORD=your_default_password
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/ai-companions.git
+cd ai-companions
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Install dependencies:
+```bash
+npm install
+```
 
-## Learn More
+3. Run database migrations:
+```bash
+npx supabase db push
+```
 
-To learn more about Next.js, take a look at the following resources:
+4. Start the development server:
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Visit `http://localhost:3000` to see the app.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📱 Usage
 
-## Deploy on Vercel
+1. Open your Telegram bot
+2. Start the Mini App
+3. Choose a companion category
+4. Customize your companion
+5. Start chatting!
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔐 Security
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Telegram authentication validation
+- Row Level Security (RLS) policies
+- Protected API routes
+- Secure environment variables
+
+## 🗂️ Project Structure
+
+```
+src/
+├── app/                   # Next.js app router pages
+├── components/           
+│   ├── chat/             # Chat-related components
+│   ├── navigation/       # Navigation components
+│   ├── onboarding/      # Onboarding flow
+│   └── ui/              # Reusable UI components
+├── lib/
+│   ├── supabase/        # Supabase client configs
+│   └── utils/           # Utility functions
+└── types/               # TypeScript definitions
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👏 Acknowledgments
+
+- [Telegram Mini Apps](https://core.telegram.org/bots/webapps)
+- [Supabase](https://supabase.com/)
+- [Next.js](https://nextjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+
+## 📞 Support
+
+For support, join our [Telegram Group](https://t.me/your_support_group) or open a GitHub issue.

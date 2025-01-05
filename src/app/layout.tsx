@@ -1,10 +1,13 @@
 // src/app/layout.tsx
 import './globals.css'
 import { Providers } from './providers'
+import { TelegramThemeProvider } from '@/components/providers/telegram-theme-provider'
+import { TopNav } from '@/components/navigation/top-nav'
+import { BottomNav } from '@/components/navigation/bottom-nav'
 
 export const metadata = {
-  title: 'AI Companions',
-  description: 'Your AI Companions in Telegram',
+  title: 'Jami AI Companions',
+  description: 'Your AI Companions',
 }
 
 export default function RootLayout({
@@ -19,7 +22,15 @@ export default function RootLayout({
       </head>
       <body>
         <Providers>
-          {children}
+        <TelegramThemeProvider>
+            <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-900">
+              <TopNav />
+              <main className="flex-1 pt-16 pb-16">
+                {children}
+              </main>
+              <BottomNav />
+            </div>
+          </TelegramThemeProvider>
         </Providers>
       </body>
     </html>

@@ -17,40 +17,38 @@ export interface TelegramWebApp {
       auth_date: number
       hash: string
     }
+    themeParams: {
+      bg_color?: string
+      text_color?: string
+      hint_color?: string
+      link_color?: string
+      button_color?: string
+      button_text_color?: string
+      secondary_bg_color?: string
+    }
+    colorScheme: 'light' | 'dark'
+    isExpanded: boolean
+    viewportHeight: number
+    viewportStableHeight: number
     MainButton: {
       text: string
       color: string
       textColor: string
       isVisible: boolean
       isActive: boolean
-      isProgressVisible: boolean
       show: () => void
       hide: () => void
       enable: () => void
       disable: () => void
-      showProgress: (leaveActive: boolean) => void
-      hideProgress: () => void
-      onClick: (callback: () => void) => void
-      offClick: (callback: () => void) => void
       setText: (text: string) => void
-      setParams: (params: {
-        text?: string
-        color?: string
-        text_color?: string
-        is_active?: boolean
-        is_visible?: boolean
-      }) => void
     }
     BackButton: {
       isVisible: boolean
       show: () => void
       hide: () => void
-      onClick: (callback: () => void) => void
-      offClick: (callback: () => void) => void
     }
     platform: string
-    colorScheme: string
-    // ... rest of the TelegramWebApp interface
+    version: string
   }
   
   declare global {

@@ -10,7 +10,7 @@ export function Navbar() {
   return (
     <div className="fixed top-0 w-full z-50 flex justify-between items-center py-2 px-4 border-b border-primary/10 bg-secondary">
       <div className="flex gap-x-2 items-center">
-        <h1 className="text-xl font-bold">
+        <h1 className="text-xl font-bold text-white">
           AI Companions
         </h1>
       </div>

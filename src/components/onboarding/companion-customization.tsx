@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { AvatarSelection } from '@/components/ui/lazy-loading'
 
 interface Category {
   id: string
@@ -76,10 +77,10 @@ const PERSONALITY_STYLES: PersonalityStyle[] = [
 ]
 
 const AVATAR_OPTIONS = [
-  { id: 'advisor', url: '/avatars/advisor.png', style: 'professional' },
-  { id: 'friendly', url: '/avatars/friendly.png', style: 'casual' },
-  { id: 'playful', url: '/avatars/playful.png', style: 'humorous' },
-  { id: 'minimal', url: '/avatars/minimal.png', style: 'all' }
+  { id: 'advisor', url: '/avatars/advisor.jpg', style: 'professional' },
+  { id: 'friendly', url: '/avatars/friendly.jpg', style: 'casual' },
+  { id: 'playful', url: '/avatars/playful.jpg', style: 'humorous' },
+  { id: 'minimal', url: '/avatars/minimal.jpg', style: 'all' }
 ]
 
 export function CompanionCustomization({ 
@@ -98,6 +99,7 @@ export function CompanionCustomization({
   const [isCreating, setIsCreating] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+  const [avatarUrl, setAvatarUrl] = useState<string>('');
 
   const handleNext = () => {
     if (step === 1 && name.trim()) {
@@ -273,28 +275,13 @@ export function CompanionCustomization({
       {/* Step 3: Avatar */}
       {step === 3 && (
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-white text-center">
+          <h2 className="text-2xl font-bold text-center">
             Choose an avatar
           </h2>
-          <div className="grid grid-cols-2 gap-4">
-            {filteredAvatars.map((avatar) => (
-              <button
-                key={avatar.id}
-                onClick={() => setImageUrl(avatar.url)}
-                className={`aspect-square rounded-lg p-2 transition ${
-                  imageUrl === avatar.url
-                    ? 'ring-2 ring-blue-500 bg-blue-500/20'
-                    : 'bg-gray-800 hover:bg-gray-700'
-                }`}
-              >
-                <img
-                  src={avatar.url}
-                  alt={`${avatar.style} avatar`}
-                  className="w-full h-full object-cover rounded-lg"
-                />
-              </button>
-            ))}
-          </div>
+          <AvatarSelection 
+            selectedUrl={avatarUrl}
+            onSelect={setAvatarUrl}
+          />
         </div>
       )}
 
@@ -312,7 +299,7 @@ export function CompanionCustomization({
         ) : (
           <button
             onClick={handleCreate}
-            disabled={isCreating || !imageUrl}
+            disabled={isCreating || !avatarUrl}  // Changed from imageUrl to avatarUrl
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isCreating ? 'Creating...' : 'Create Companion'}

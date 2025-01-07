@@ -41,7 +41,7 @@ export function TopNav({ companion }: TopNavProps) {
                 <span className="font-medium text-lg">{companion.name}</span>
               </div>
             ) : (
-              <h1 className="font-medium text-lg">
+              <h1 className="font-medium text-lg text-white">
                 {isDashboard ? 'Dashboard' : 'AI Companions'}
               </h1>
             )}

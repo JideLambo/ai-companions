@@ -3,6 +3,7 @@
 // src/components/navigation/top-nav.tsx
 import { usePathname } from 'next/navigation'
 import { ChevronLeft, Bell, Settings } from 'lucide-react'
+import Image from 'next/image'
 
 interface TopNavProps {
   companion?: {
@@ -32,7 +33,7 @@ export function TopNav({ companion }: TopNavProps) {
             {companion ? (
               <div className="flex items-center space-x-3">
                 {companion.image_url && (
-                  <img 
+                  <Image 
                     src={companion.image_url} 
                     alt={companion.name}
                     className="w-8 h-8 rounded-full"

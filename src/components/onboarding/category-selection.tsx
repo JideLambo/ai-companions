@@ -2,9 +2,6 @@
 
 // src/components/onboarding/category-selection.tsx
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
-import { ensureUser } from '@/lib/utils/auth-utils';
 import { motion, AnimatePresence } from 'framer-motion'
 import { CompanionCustomization } from './companion-customization';
 

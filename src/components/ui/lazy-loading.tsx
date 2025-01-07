@@ -1,10 +1,11 @@
-'use client'
+// src/components/ui/lazy-loading.tsx
+import Image from 'next/image'
 
 const AVATAR_OPTIONS = [
-  { id: 'default', url: '/avatars/minimal.jpg' },
-  { id: 'professional', url: '/avatars/advisor.jpg' },
-  { id: 'casual', url: '/avatars/friendly.jpg' },
-  { id: 'fun', url: '/avatars/playful.jpg' }
+  { id: 'advisor', url: '/avatars/advisor.jpg', width: 200, height: 200, style: 'professional' },
+  { id: 'friendly', url: '/avatars/friendly.jpg', width: 200, height: 200, style: 'casual' },
+  { id: 'playful', url: '/avatars/playful.jpg', width: 200, height: 200, style: 'humorous' },
+  { id: 'minimal', url: '/avatars/minimal.jpg', width: 200, height: 200, style: 'all' }
 ]
 
 interface AvatarSelectionProps {
@@ -15,31 +16,23 @@ interface AvatarSelectionProps {
 export function AvatarSelection({ selectedUrl, onSelect }: AvatarSelectionProps) {
   return (
     <div className="grid grid-cols-2 gap-4">
-      {AVATAR_OPTIONS.map((option) => (
+      {AVATAR_OPTIONS.map((avatar) => (
         <button
-          key={option.id}
-          onClick={() => {
-            console.log('Selected URL:', option.url);
-            onSelect(option.url);
-        }}
-          className={`
-            relative aspect-square rounded-xl overflow-hidden transition-transform hover:scale-105
-            ${selectedUrl === option.url 
+          key={avatar.id}
+          onClick={() => onSelect(avatar.url)}
+          className={`relative aspect-square rounded-xl overflow-hidden
+            ${selectedUrl === avatar.url 
               ? 'ring-2 ring-blue-500' 
               : 'hover:ring-2 hover:ring-blue-500/50'
-            }
-          `}
+            }`}
         >
-          <img
-            src={option.url}
-            alt={`Avatar ${option.id}`}
-            loading="lazy"
-            className="w-full h-full object-cover transition-opacity duration-300"
-            onLoad={(e) => {
-              const img = e.target as HTMLImageElement;
-              img.style.opacity = '1';
-            }}
-            style={{ opacity: 0 }}
+          <Image
+            src={avatar.url}
+            alt={`Avatar ${avatar.id}`}
+            width={avatar.width}
+            height={avatar.height}
+            className="object-cover"
+            priority
           />
         </button>
       ))}

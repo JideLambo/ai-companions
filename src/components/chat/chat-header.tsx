@@ -1,7 +1,8 @@
 // src/components/chat/chat-header.tsx
 'use client'
+import { Companion } from '@/types/chat'
 
-export function ChatHeader({ companion }: { companion: any }) {
+export function ChatHeader({ companion }: { companion: Companion }) {
   return (
     <div className="fixed top-0 w-full bg-white border-b border-gray-200 px-4 py-3 flex items-center">
       <div>

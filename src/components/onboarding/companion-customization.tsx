@@ -76,12 +76,12 @@ const PERSONALITY_STYLES: PersonalityStyle[] = [
   }
 ]
 
-const AVATAR_OPTIONS = [
-  { id: 'advisor', url: '/avatars/advisor.jpg', style: 'professional' },
-  { id: 'friendly', url: '/avatars/friendly.jpg', style: 'casual' },
-  { id: 'playful', url: '/avatars/playful.jpg', style: 'humorous' },
-  { id: 'minimal', url: '/avatars/minimal.jpg', style: 'all' }
-]
+// const AVATAR_OPTIONS = [
+//   { id: 'advisor', url: '/avatars/advisor.jpg', style: 'professional' },
+//   { id: 'friendly', url: '/avatars/friendly.jpg', style: 'casual' },
+//   { id: 'playful', url: '/avatars/playful.jpg', style: 'humorous' },
+//   { id: 'minimal', url: '/avatars/minimal.jpg', style: 'all' }
+// ]
 
 export function CompanionCustomization({ 
   category,
@@ -95,7 +95,7 @@ export function CompanionCustomization({
   const [step, setStep] = useState(1)
   const [name, setName] = useState(template.name)
   const [personalityStyle, setPersonalityStyle] = useState<PersonalityStyle | null>(null)
-  const [imageUrl, setImageUrl] = useState<string>('')
+  const [imageUrl] = useState<string>('')
   const [isCreating, setIsCreating] = useState(false)
   const router = useRouter()
   const supabase = createClient()
@@ -197,11 +197,11 @@ export function CompanionCustomization({
   }
 
   // Filter avatars based on selected personality style
-  const filteredAvatars = personalityStyle
-    ? AVATAR_OPTIONS.filter(avatar => 
-        avatar.style === 'all' || avatar.style === personalityStyle.id
-      )
-    : AVATAR_OPTIONS
+  // const filteredAvatars = personalityStyle
+  //   ? AVATAR_OPTIONS.filter(avatar => 
+  //       avatar.style === 'all' || avatar.style === personalityStyle.id
+  //     )
+  //   : AVATAR_OPTIONS
 
   return (
     <div className="space-y-6 px-4">
@@ -265,7 +265,7 @@ export function CompanionCustomization({
               >
                 <h3 className="font-semibold text-lg">{style.name}</h3>
                 <p className="text-sm opacity-90">{style.description}</p>
-                <p className="mt-2 text-sm italic">"{style.previewMessage}"</p>
+                <p className="mt-2 text-sm italic">&quot;{style.previewMessage}&quot;</p>
               </button>
             ))}
           </div>
@@ -275,7 +275,7 @@ export function CompanionCustomization({
       {/* Step 3: Avatar */}
       {step === 3 && (
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold text-center">
+          <h2 className="text-2xl font-bold text-center text-white">
             Choose an avatar
           </h2>
           <AvatarSelection 

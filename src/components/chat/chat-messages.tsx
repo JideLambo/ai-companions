@@ -1,7 +1,8 @@
 // src/components/chat/chat-messages.tsx
 'use client'
+import { Message } from '@/types/chat'
 
-export function ChatMessages({ messages }: { messages: any[] }) {
+export function ChatMessages({ messages }: { messages: Message[] }) {
   return (
     <div className="flex-1 overflow-y-auto p-4 pt-20 pb-24">
       {messages.map((message, index) => (
